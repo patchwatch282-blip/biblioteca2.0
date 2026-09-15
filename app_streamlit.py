@@ -55,7 +55,7 @@ def cerrar_sesion():
 # ============================================================
 
 def pantalla_login():
-    st.title("📚 Sistema de Biblioteca")
+    st.title("Sistema de Biblioteca")
     tab_login, tab_registro, tab_recuperar = st.tabs(
         ["Iniciar sesion", "Registrarme", "Recuperar contrasena"]
     )
@@ -110,7 +110,7 @@ def pantalla_login():
 # ============================================================
 
 def pantalla_catalogo(usuario):
-    st.header("📖 Catalogo de libros")
+    st.header("Catalogo de libros")
     col1, col2, col3 = st.columns(3)
     texto = col1.text_input("Buscar por titulo o autor")
     autor = col2.text_input("Filtrar por autor")
@@ -146,7 +146,7 @@ def pantalla_catalogo(usuario):
                     st.button("No disponible", key=f"nodisp_{libro['id']}", disabled=True)
 
             if resumen["cantidad"] > 0:
-                with st.popover("💬 Ver opiniones"):
+                with st.popover("Ver opiniones"):
                     pantalla_opiniones_libro(libro)
 
 

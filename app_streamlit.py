@@ -16,7 +16,7 @@ from biblioteca_core import (
     hoy_texto,
 )
 
-st.set_page_config(page_title="Biblioteca", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Biblioteca", page_icon="", layout="wide")
 
 
 # ============================================================
@@ -129,7 +129,7 @@ def pantalla_catalogo(usuario):
                 st.caption(f"{libro['autor']} · {libro['genero']} · Origen: {libro['origen']}")
                 resumen = db.resumen_libro(libro["id"])
                 if resumen["cantidad"] > 0:
-                    st.write(f"⭐ {resumen['promedio']:.1f}/5 ({resumen['cantidad']} opiniones)")
+                    st.write(f" {resumen['promedio']:.1f}/5 ({resumen['cantidad']} opiniones)")
                 else:
                     st.caption("Aun sin calificaciones.")
                 st.write(f"Disponibles: **{libro['stock']}**")
@@ -153,8 +153,8 @@ def pantalla_catalogo(usuario):
 def pantalla_opiniones_libro(libro):
     """Equivalente a mostrar_opiniones_libro() del original: detalle de comentarios de un libro."""
     resumen = db.resumen_libro(libro["id"])
-    st.markdown(f"**📚 {libro['titulo']}**")
-    st.caption(f"⭐ {resumen['promedio']:.1f}/5 · {resumen['cantidad']} calificacion(es)")
+    st.markdown(f"** {libro['titulo']}**")
+    st.caption(f" {resumen['promedio']:.1f}/5 · {resumen['cantidad']} calificacion(es)")
     for opinion in db.opiniones_libro(libro["id"]):
         estrellas = "★" * opinion["calificacion"] + "☆" * (5 - opinion["calificacion"])
         st.write(f"**{opinion['nombre']}** — {estrellas}")
@@ -164,7 +164,7 @@ def pantalla_opiniones_libro(libro):
 
 
 def pantalla_mis_prestamos(usuario):
-    st.header("🎒 Mis prestamos")
+    st.header(" Mis prestamos")
     prestamos = db.prestamos_usuario(usuario["codigo"])
     if not prestamos:
         st.info("Aun no tienes prestamos registrados.")
@@ -200,7 +200,7 @@ def pantalla_mis_prestamos(usuario):
                     st.caption("Puedes calificarlo abajo ⬇️")
 
     st.divider()
-    st.subheader("⭐ Calificar un libro devuelto")
+    st.subheader(" Calificar un libro devuelto")
     libros_calificables = [
         db.buscar_libro(p["id_libro"])
         for p in prestamos
@@ -225,7 +225,7 @@ def pantalla_mis_prestamos(usuario):
 
 
 def pantalla_solicitudes(usuario):
-    st.header("📝 Solicitudes")
+    st.header(" Solicitudes")
     st.subheader("Nueva solicitud")
     with st.form("form_solicitud"):
         tipo = st.selectbox("Tipo", ["LIBRO_NUEVO", "NO_DISPONIBLE"])
@@ -256,7 +256,7 @@ def pantalla_solicitudes(usuario):
 
 
 def pantalla_perfil(usuario):
-    st.header("👤 Mi perfil")
+    st.header(" Mi perfil")
     st.write(f"**Nombre:** {usuario['nombre']}")
     st.write(f"**Codigo:** {usuario['codigo']}")
     st.write(f"**Telefono:** {usuario['telefono']}")
@@ -292,9 +292,9 @@ def pantalla_perfil(usuario):
 # ============================================================
 
 def pantalla_administrar_libros():
-    st.header("🛠️ Administrar libros")
+    st.header(" Administrar libros")
 
-    with st.expander("➕ Agregar libro nuevo"):
+    with st.expander(" Agregar libro nuevo"):
         with st.form("form_agregar_libro"):
             titulo = st.text_input("Titulo")
             autor = st.text_input("Autor")
@@ -339,7 +339,7 @@ def pantalla_administrar_libros():
 
 
 def pantalla_usuarios_admin():
-    st.header("👥 Usuarios")
+    st.header("Usuarios")
     st.dataframe(
         [{"Codigo": u["codigo"], "Nombre": u["nombre"], "Telefono": u["telefono"],
           "Rol": u["rol"], "Deuda": f"L.{u['deuda']:.2f}", "Pagado": f"L.{u['pagado']:.2f}"}
@@ -363,7 +363,7 @@ def pantalla_usuarios_admin():
 
 
 def pantalla_solicitudes_admin():
-    st.header("📥 Solicitudes de usuarios")
+    st.header("Solicitudes de usuarios")
     pendientes = [s for s in db.solicitudes if s["estado"] == "PENDIENTE"]
     if not pendientes:
         st.info("No hay solicitudes pendientes.")
@@ -392,7 +392,7 @@ def pantalla_solicitudes_admin():
 
 def pantalla_alertas(usuario):
     """Equivalente a mostrar_alertas(): admin ve todos los prestamos activos, cliente solo los suyos."""
-    st.header("🚨 Alertas de prestamos")
+    st.header("Alertas de prestamos!")
     activos = [p for p in db.prestamos if p["estado"] == "PRESTADO"]
     if usuario["rol"] != "ADMIN":
         activos = [p for p in activos if p["codigo_usuario"] == usuario["codigo"]]
@@ -416,7 +416,7 @@ def pantalla_alertas(usuario):
 
 def pantalla_historial_admin():
     """Equivalente a mostrar_historial(): el admin busca prestamos de cualquier usuario y puede devolverlos."""
-    st.header("🗂️ Prestamos e historial")
+    st.header("Prestamos e historial")
     busqueda = st.text_input("Buscar usuario (codigo o nombre)")
 
     filtro = busqueda.strip().lower()
@@ -470,7 +470,7 @@ def pantalla_historial_admin():
 
 def pantalla_calificaciones_admin():
     """Equivalente a mostrar_calificaciones_admin(): todas las opiniones de todos los libros."""
-    st.header("💬 Calificaciones y comentarios")
+    st.header("Calificaciones y comentarios")
     filas = db.con.execute(
         """SELECT l.titulo, u.nombre, c.calificacion, c.comentario, c.fecha
            FROM calificaciones c
@@ -495,17 +495,17 @@ def pantalla_calificaciones_admin():
 
 
 def pantalla_estadisticas():
-    st.header("📊 Estadisticas")
+    st.header("Estadisticas")
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("🔥 Mas leidos")
+        st.subheader(" Mas leidos")
         st.dataframe(
             [{"Libro": l["titulo"], "Autor": l["autor"], "Prestamos": l["prestamos"]}
              for l in db.libros_mas_leidos()],
             use_container_width=True, hide_index=True,
         )
     with col2:
-        st.subheader("⭐ Mejor calificados")
+        st.subheader("Mejor calificados")
         st.dataframe(
             [{"Libro": l["titulo"], "Autor": l["autor"], "Promedio": f"{l['promedio']:.1f}", "Votos": l["cantidad"]}
              for l in db.libros_mejor_calificados()],
@@ -513,7 +513,7 @@ def pantalla_estadisticas():
         )
 
     st.divider()
-    st.subheader("💰 Configurar multa por dia")
+    st.subheader("Configurar multa por dia")
     with st.form("form_multa"):
         monto = st.number_input("Multa diaria (L.)", min_value=0.0, value=db.obtener_multa_por_dia(), step=1.0)
         enviado = st.form_submit_button("Guardar")
@@ -522,7 +522,7 @@ def pantalla_estadisticas():
         (st.success if ok else st.error)(mensaje)
 
     st.divider()
-    st.subheader("🧾 Movimientos recientes")
+    st.subheader("Movimientos recientes")
     st.dataframe(
         [{"Fecha": fecha_legible(m["fecha"]), "Tipo": m["tipo"], "Detalle": m["detalle"]}
          for m in reversed(db.movimientos[-100:])],
@@ -541,7 +541,7 @@ def pantalla_principal():
         return
     st.session_state.usuario = usuario
 
-    st.sidebar.title("📚 Biblioteca")
+    st.sidebar.title("Biblioteca")
     st.sidebar.write(f"Sesion: **{usuario['nombre']}** ({usuario['rol']})")
 
     if usuario["rol"] == "ADMIN":

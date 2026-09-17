@@ -1,10 +1,4 @@
-"""
-Interfaz web (Streamlit) para el sistema de biblioteca.
-Reutiliza toda la logica y persistencia de biblioteca_core.py (clase Biblioteca).
 
-Para ejecutar:
-    streamlit run app_streamlit.py
-"""
 
 import streamlit as st
 from datetime import date
@@ -57,7 +51,7 @@ def cerrar_sesion():
 def pantalla_login():
     st.title("Sistema de Biblioteca")
     tab_login, tab_registro, tab_recuperar = st.tabs(
-        ["Iniciar sesion", "Registrarme", "Recuperar contrasena"]
+        ["Iniciar sesion", "Registrarme", "Recuperar contraseña"]
     )
 
     with tab_login:

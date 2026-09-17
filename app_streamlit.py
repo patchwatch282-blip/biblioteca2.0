@@ -71,11 +71,7 @@ def pantalla_login():
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
             telefono = st.text_input("Telefono")
-           preguntas_disponibles = [
-    "¿Cuál es el nombre de tu primera mascota?",
-    "¿En qué ciudad naciste?",
-    "¿Cuál es tu color favorito?",
-    "¿Nombre de tu escuela primaria?"
+           preguntas_disponibles =  "¿Cuál es el nombre de tu primera mascota?","¿En qué ciudad naciste?","¿Cuál es tu color favorito?","¿Nombre de tu escuela primaria?"
             respuesta = st.text_input("Respuesta de seguridad")
             enviado = st.form_submit_button("Registrarme", type="primary")
         if enviado:

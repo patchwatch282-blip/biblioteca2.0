@@ -57,7 +57,7 @@ def pantalla_login():
     with tab_login:
         with st.form("form_login"):
             codigo = st.text_input("Codigo de usuario")
-            password = st.text_input("Contrasena", type="password")
+            password = st.text_input("Contraseña", type="password")
             enviado = st.form_submit_button("Entrar", type="primary")
         if enviado:
             usuario = db.autenticar(codigo, password)
@@ -65,13 +65,17 @@ def pantalla_login():
                 st.session_state.usuario = usuario
                 st.rerun()
             else:
-                st.error("Codigo o contrasena incorrectos.")
+                st.error("Codigo o contraseña incorrectos.")
 
     with tab_registro:
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
             telefono = st.text_input("Telefono")
-            pregunta = st.text_input("Pregunta de seguridad")
+           preguntas_disponibles = [
+    "¿Cuál es el nombre de tu primera mascota?",
+    "¿En qué ciudad naciste?",
+    "¿Cuál es tu color favorito?",
+    "¿Nombre de tu escuela primaria?"
             respuesta = st.text_input("Respuesta de seguridad")
             enviado = st.form_submit_button("Registrarme", type="primary")
         if enviado:

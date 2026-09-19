@@ -56,17 +56,25 @@ def pantalla_login():
 
     with tab_login:
         with st.form("form_login"):
-            codigo = st.text_input("Codigo de usuario")
-            password = st.text_input("Contraseña", type="password")
+            nombre = st.text_input("Nombre de usuario")
+            password = st.text_input("Contrasena", type="password")
             enviado = st.form_submit_button("Entrar", type="primary")
         if enviado:
-            usuario = db.autenticar(codigo, password)
-            if usuario:
-                st.session_state.usuario = usuario
-                st.rerun()
+            coincidencias = db.buscar_usuarios_por_nombre(nombre)
+            if not coincidencias:
+                st.error("No existe ningun usuario con ese nombre.")
+            elif len(coincidencias) > 1:
+                st.error(
+                    "Hay mas de un usuario registrado con ese nombre exacto. "
+                    "Pide a un administrador tu codigo de usuario para poder entrar."
+                )
             else:
-                st.error("Codigo o contraseña incorrectos.")
-
+                usuario = db.autenticar(coincidencias[0]["codigo"], password)
+                if usuario:
+                    st.session_state.usuario = usuario
+                    st.rerun()
+                else:
+                    st.error("Contrasena incorrecta.")
     with tab_registro:
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")

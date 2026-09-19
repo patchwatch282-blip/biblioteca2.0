@@ -617,7 +617,7 @@ class Biblioteca:
         ).fetchone()
         return dict(fila) if fila else None
        
-        def buscar_usuarios_por_nombre(self, nombre):
+    def buscar_usuarios_por_nombre(self, nombre):
         """Devuelve la lista de usuarios (codigo, nombre, etc.) cuyo nombre coincide exactamente (sin importar mayusculas/espacios)."""
         nombre = (nombre or "").strip()
         filas = self.con.execute(

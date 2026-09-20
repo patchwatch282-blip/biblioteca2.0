@@ -6,6 +6,7 @@ from datetime import date
 from biblioteca_core import (
     Biblioteca,
     GENEROS_PREDETERMINADOS,
+    PREGUNTAS_SEGURIDAD,
     fecha_legible,
     hoy_texto,
 )
@@ -80,20 +81,18 @@ def pantalla_login():
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
             telefono = st.text_input("Telefono")
+            pregunta = st.selectbox("Pregunta de seguridad", PREGUNTAS_SEGURIDAD)
             respuesta = st.text_input("Respuesta de seguridad")
-            st.caption("La pregunta de seguridad te la asignara el sistema al azar y se te mostrara al terminar.")
             enviado = st.form_submit_button("Registrarme", type="primary")
         if enviado:
-            resultado, error = db.crear_usuario(nombre, telefono, None, respuesta)
+            resultado, error = db.crear_usuario(nombre, telefono, None, pregunta, respuesta)
             if error:
                 st.error(error)
             else:
                 st.success(
                     f"Registro exitoso. Tu codigo es **{resultado['usuario']['codigo']}** "
-                    f"y tu contrasena inicial es **{resultado['password_inicial']}**. "
+                    f"y tu contraseña inicial es **{resultado['password_inicial']}**. "
                     "Guardala, no se volvera a mostrar."
-                )
-                st.info(f"Tu pregunta de seguridad es: **{resultado['pregunta_seguridad']}**")
 
     with tab_recuperar:
         if "recuperar_pregunta" not in st.session_state:

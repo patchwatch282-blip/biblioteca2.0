@@ -780,7 +780,7 @@ class Biblioteca:
             self.con.rollback()
             return None, "No se pudo restablecer la contraseña."
 
-    def crear_usuario(self, nombre, telefono, password=None, respuesta_seguridad=""):
+    def crear_usuario(self, nombre, telefono, password=None, pregunta_seguridad="", respuesta_seguridad=""):
         nombre = nombre.strip()
         telefono = telefono.strip()
         respuesta_seguridad = respuesta_seguridad.strip()
@@ -791,10 +791,10 @@ class Biblioteca:
             return None, "El telefono debe contener solo numeros."
         if len(telefono) < 4:
             return None, "El telefono debe tener al menos 4 digitos."
+        if pregunta_seguridad not in PREGUNTAS_SEGURIDAD:
+            return None, "Selecciona una pregunta de seguridad valida."
         if not respuesta_seguridad:
             return None, "La respuesta de seguridad es obligatoria."
-
-        pregunta_seguridad = secrets.choice(PREGUNTAS_SEGURIDAD)
 
         codigo = self.generar_codigo_usuario(telefono)
 

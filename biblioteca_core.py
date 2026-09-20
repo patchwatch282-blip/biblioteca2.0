@@ -129,6 +129,17 @@ GENEROS_PREDETERMINADOS = [
     "Infantil",
 ]
 
+PREGUNTAS_SEGURIDAD = [
+    "¿Cual es el nombre de tu primera mascota?",
+    "¿Cual es el nombre de tu mejor amigo de la infancia?",
+    "¿En que ciudad naciste?",
+    "¿Cual es tu comida favorita?",
+    "¿Cual es el nombre de tu escuela primaria?",
+    "¿Cual es el segundo nombre de tu mama?",
+    "¿Cual fue tu primer trabajo?",
+    "¿Cual es tu pelicula favorita?",
+]
+
 MAPA_GENEROS_ANTIGUOS = {
     "novela grafica": "Literatura",
     "creatividad": "Literatura",
@@ -612,7 +623,7 @@ class Biblioteca:
 
     def buscar_usuario(self, codigo):
         fila = self.con.execute(
-            "SELECT codigo, nombre, telefono, rol, password, deuda, pagado FROM usuarios WHERE lower(codigo) = lower(?)",
+            "SELECT codigo, nombre, telefono, rol, password, deuda, pagado, pregunta_seguridad, respuesta_seguridad FROM usuarios WHERE lower(codigo) = lower(?)",
             (codigo,)
         ).fetchone()
         return dict(fila) if fila else None
@@ -624,7 +635,15 @@ class Biblioteca:
             (nombre,)
         ).fetchall()
         return [dict(f) for f in filas]
-
+    
+    def obtener_pregunta_seguridad(self, codigo):
+        """Devuelve la pregunta de seguridad asignada a un usuario, o None si no existe."""
+        fila = self.con.execute(
+            "SELECT pregunta_seguridad FROM usuarios WHERE lower(codigo) = lower(?)",
+            (codigo,)
+        ).fetchone()
+        return fila["pregunta_seguridad"] if fila else None
+    
     def buscar_libro(self, libro_id):
         fila = self.con.execute(
             "SELECT id, titulo, autor, genero, stock, origen, fecha_alta FROM libros WHERE id = ?",
@@ -761,10 +780,9 @@ class Biblioteca:
             self.con.rollback()
             return None, "No se pudo restablecer la contraseña."
 
-    def crear_usuario(self, nombre, telefono, password=None, pregunta_seguridad="", respuesta_seguridad=""):
+    def crear_usuario(self, nombre, telefono, password=None, respuesta_seguridad=""):
         nombre = nombre.strip()
         telefono = telefono.strip()
-        pregunta_seguridad = pregunta_seguridad.strip()
         respuesta_seguridad = respuesta_seguridad.strip()
 
         if not nombre:
@@ -773,8 +791,10 @@ class Biblioteca:
             return None, "El telefono debe contener solo numeros."
         if len(telefono) < 4:
             return None, "El telefono debe tener al menos 4 digitos."
-        if not pregunta_seguridad or not respuesta_seguridad:
-            return None, "La pregunta y respuesta de seguridad son obligatorias."
+        if not respuesta_seguridad:
+            return None, "La respuesta de seguridad es obligatoria."
+
+        pregunta_seguridad = secrets.choice(PREGUNTAS_SEGURIDAD)
 
         codigo = self.generar_codigo_usuario(telefono)
 
@@ -788,7 +808,7 @@ class Biblioteca:
                 "SELECT 1 FROM usuarios WHERE password = ? LIMIT 1",
                 (hash_password(password),)
             ).fetchone():
-                return None, "Esa contrasena ya esta utilizada. Elija otra."
+                return None, "Esa contraseña ya esta utilizada. Elija otra."
 
         try:
             self.con.execute(
@@ -801,7 +821,11 @@ class Biblioteca:
             self.registrar_movimiento("USUARIO", f"Se registro el usuario {nombre}.")
             self.con.commit()
             self.refrescar_cache()
-            return {"usuario": self.buscar_usuario(codigo), "password_inicial": password}, ""
+            return {
+                "usuario": self.buscar_usuario(codigo),
+                "password_inicial": password,
+                "pregunta_seguridad": pregunta_seguridad,
+            }, ""
         except sqlite3.IntegrityError:
             self.con.rollback()
             return None, "No se pudo registrar el usuario."

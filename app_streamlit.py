@@ -280,8 +280,9 @@ def pantalla_perfil(usuario):
     st.write(f"**Nombre:** {usuario['nombre']}")
     st.write(f"**Codigo:** {usuario['codigo']}")
     st.write(f"**Telefono:** {usuario['telefono']}")
-    st.write(f"**Deuda pendiente:** L.{usuario['deuda']:.2f}")
-    st.write(f"**Total pagado:** L.{usuario['pagado']:.2f}")
+    if usuario["rol"] != "ADMIN":
+            st.write(f"**Deuda pendiente:** L.{usuario['deuda']:.2f}")
+            st.write(f"**Total pagado:** L.{usuario['pagado']:.2f}")
 
     with st.expander("Cambiar mi contrasena"):
         with st.form("form_cambiar_password"):

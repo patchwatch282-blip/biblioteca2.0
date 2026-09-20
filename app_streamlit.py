@@ -93,6 +93,7 @@ def pantalla_login():
                     f"Registro exitoso. Tu codigo es **{resultado['usuario']['codigo']}** "
                     f"y tu contraseña inicial es **{resultado['password_inicial']}**. "
                     "Guardala, no se volvera a mostrar."
+                )
 
     with tab_recuperar:
         if "recuperar_pregunta" not in st.session_state:

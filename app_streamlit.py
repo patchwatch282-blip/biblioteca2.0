@@ -75,15 +75,15 @@ def pantalla_login():
                     st.rerun()
                 else:
                     st.error("Contraseña incorrecta.")
-    with tab_registro:
+     with tab_registro:
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
             telefono = st.text_input("Telefono")
-            pregunta = st.text_input("Pregunta de seguridad")
             respuesta = st.text_input("Respuesta de seguridad")
+            st.caption("La pregunta de seguridad te la asignara el sistema al azar y se te mostrara al terminar.")
             enviado = st.form_submit_button("Registrarme", type="primary")
         if enviado:
-            resultado, error = db.crear_usuario(nombre, telefono, None, pregunta, respuesta)
+            resultado, error = db.crear_usuario(nombre, telefono, None, respuesta)
             if error:
                 st.error(error)
             else:
@@ -92,19 +92,36 @@ def pantalla_login():
                     f"y tu contrasena inicial es **{resultado['password_inicial']}**. "
                     "Guardala, no se volvera a mostrar."
                 )
+                st.info(f"Tu pregunta de seguridad es: **{resultado['pregunta_seguridad']}**")
 
     with tab_recuperar:
-        with st.form("form_recuperar"):
-            codigo = st.text_input("Codigo de usuario", key="rec_codigo")
-            telefono = st.text_input("Telefono registrado", key="rec_tel")
-            respuesta = st.text_input("Respuesta de seguridad", key="rec_resp")
-            enviado = st.form_submit_button("Recuperar", type="primary")
-        if enviado:
-            nueva, error = db.recuperar_password(codigo, telefono, respuesta)
-            if error:
-                st.error(error)
+        if "recuperar_pregunta" not in st.session_state:
+            st.session_state.recuperar_pregunta = None
+            st.session_state.recuperar_codigo = ""
+
+        codigo_buscar = st.text_input("Codigo de usuario", key="rec_codigo_buscar")
+        if st.button("Buscar mi pregunta de seguridad"):
+            pregunta = db.obtener_pregunta_seguridad(codigo_buscar)
+            if pregunta:
+                st.session_state.recuperar_pregunta = pregunta
+                st.session_state.recuperar_codigo = codigo_buscar
             else:
-                st.success(f"Tu nueva contrasena es: **{nueva}**")
+                st.session_state.recuperar_pregunta = None
+                st.error("No existe ningun usuario con ese codigo.")
+
+        if st.session_state.recuperar_pregunta:
+            st.write(f"**Tu pregunta:** {st.session_state.recuperar_pregunta}")
+            with st.form("form_recuperar"):
+                telefono = st.text_input("Telefono registrado", key="rec_tel")
+                respuesta = st.text_input("Respuesta de seguridad", key="rec_resp")
+                enviado = st.form_submit_button("Recuperar", type="primary")
+            if enviado:
+                nueva, error = db.recuperar_password(st.session_state.recuperar_codigo, telefono, respuesta)
+                if error:
+                    st.error(error)
+                else:
+                    st.success(f"Tu nueva contrasena es: **{nueva}**")
+                    st.session_state.recuperar_pregunta = None
 
 
 # ============================================================

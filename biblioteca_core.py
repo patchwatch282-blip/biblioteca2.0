@@ -618,7 +618,6 @@ class Biblioteca:
         return dict(fila) if fila else None
        
     def buscar_usuarios_por_nombre(self, nombre):
-        """Devuelve la lista de usuarios (codigo, nombre, etc.) cuyo nombre coincide exactamente (sin importar mayusculas/espacios)."""
         nombre = (nombre or "").strip()
         filas = self.con.execute(
             "SELECT codigo, nombre, telefono, rol, password, deuda, pagado FROM usuarios WHERE lower(nombre) = lower(?)",

@@ -797,7 +797,7 @@ class Biblioteca:
             return None, "La respuesta de seguridad es obligatoria."
 
         codigo = self.generar_codigo_usuario(telefono)
-
+        
         if self.con.execute("SELECT 1 FROM usuarios WHERE telefono = ?", (telefono,)).fetchone():
             return None, "Ya existe un usuario con ese telefono."
 

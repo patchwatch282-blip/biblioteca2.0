@@ -217,10 +217,10 @@ def pantalla_mis_prestamos(usuario):
                         else:
                             st.error("No se pudo registrar la devolucion.")
                 elif db.puede_calificar(usuario["codigo"], prestamo["id_libro"]):
-                    st.caption("Puedes calificarlo abajo ⬇️")
+                    st.caption("Puedes calificarlo abajo")
 
     st.divider()
-    st.subheader(" Calificar un libro devuelto")
+    st.subheader("Calificar un libro devuelto")
     libros_calificables = [
         db.buscar_libro(p["id_libro"])
         for p in prestamos
@@ -285,15 +285,15 @@ def pantalla_perfil(usuario):
 
     with st.expander("Cambiar mi contrasena"):
         with st.form("form_cambiar_password"):
-            nueva = st.text_input("Nueva contrasena", type="password")
-            confirmar = st.text_input("Confirmar contrasena", type="password")
+            nueva = st.text_input("Nueva contraseña", type="password")
+            confirmar = st.text_input("Confirmar contraseña", type="password")
             enviado = st.form_submit_button("Cambiar")
         if enviado:
             if not nueva or nueva != confirmar:
-                st.error("Las contrasenas no coinciden.")
+                st.error("Las contraseñas no coinciden.")
             else:
                 db.cambiar_password(usuario, nueva)
-                st.success("Contrasena actualizada.")
+                st.success("Contraseña actualizada.")
 
     if usuario["deuda"] > 0:
         with st.expander("Pagar deuda"):

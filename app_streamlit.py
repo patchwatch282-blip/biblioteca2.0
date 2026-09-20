@@ -57,7 +57,7 @@ def pantalla_login():
     with tab_login:
         with st.form("form_login"):
             nombre = st.text_input("Nombre de usuario")
-            password = st.text_input("Contrasena", type="password")
+            password = st.text_input("Contraseña", type="password")
             enviado = st.form_submit_button("Entrar", type="primary")
         if enviado:
             coincidencias = db.buscar_usuarios_por_nombre(nombre)
@@ -74,7 +74,7 @@ def pantalla_login():
                     st.session_state.usuario = usuario
                     st.rerun()
                 else:
-                    st.error("Contrasena incorrecta.")
+                    st.error("Contraseña incorrecta.")
     with tab_registro:
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
@@ -339,7 +339,6 @@ def pantalla_administrar_libros():
                     if ok:
                         st.rerun()
 
-
 def pantalla_usuarios_admin():
     st.header("Usuarios")
     st.dataframe(
@@ -348,21 +347,6 @@ def pantalla_usuarios_admin():
          for u in db.usuarios],
         use_container_width=True, hide_index=True,
     )
-
-    st.subheader("Restablecer contrasena de un usuario")
-    codigos = [u["codigo"] for u in db.usuarios if u["rol"] == "CLIENTE"]
-    if codigos:
-        with st.form("form_restablecer"):
-            codigo_usuario = st.selectbox("Usuario", codigos)
-            password_admin = st.text_input("Tu contrasena de administrador", type="password")
-            enviado = st.form_submit_button("Restablecer")
-        if enviado:
-            nueva, error = db.restablecer_password_admin(codigo_usuario, password_admin)
-            if error:
-                st.error(error)
-            else:
-                st.success(f"Nueva contrasena para {codigo_usuario}: **{nueva}**")
-
 
 def pantalla_solicitudes_admin():
     st.header("Solicitudes de usuarios")

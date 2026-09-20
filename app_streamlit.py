@@ -76,7 +76,7 @@ def pantalla_login():
                 else:
                     st.error("Contraseña incorrecta.")
      
-     with tab_registro:
+    with tab_registro:
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo")
             telefono = st.text_input("Telefono")

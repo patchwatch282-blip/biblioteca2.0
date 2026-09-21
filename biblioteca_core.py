@@ -988,7 +988,7 @@ class Biblioteca:
             (codigo,)
         )]
 
-    def crear_prestamo(self, codigo_usuario, libro_id):
+   def crear_prestamo(self, codigo_usuario, libro_id):
         usuario = self.buscar_usuario(codigo_usuario)
         libro = self.buscar_libro(libro_id)
 
@@ -996,6 +996,14 @@ class Biblioteca:
             return False, "Usuario no encontrado."
         if libro is None:
             return False, "El libro no existe."
+
+        if usuario["rol"] == "CLIENTE":
+            vencidos = [p for p in self.activos_usuario(codigo_usuario) if self.estado_prestamo(p) == "VENCIDO"]
+            if vencidos:
+                return False, (
+                    "Tienes un prestamo vencido. Debes devolver el libro y pagar la multa "
+                    "correspondiente antes de solicitar otro."
+                )
 
         activos = self.activos_usuario(codigo_usuario)
         if len(activos) >= MAX_LIBROS:

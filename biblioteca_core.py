@@ -68,7 +68,7 @@ LIBROS_INICIALES = [
     },
     {
         "id": 6,
-        "titulo": "Cien Anos de Soledad",
+        "titulo": "Cien Años de Soledad",
         "autor": "Gabriel Garcia Marquez",
         "genero": "Realismo magico",
         "stock": 2,

@@ -321,7 +321,7 @@ def pantalla_administrar_libros():
             autor = st.text_input("Autor")
             genero = st.selectbox("Genero", GENEROS_PREDETERMINADOS)
             stock = st.number_input("Stock", min_value=0, step=1, value=1)
-            origen = st.selectbox("Origen", ["Compra", "Donacion", "Intercambio"])
+            origen = st.selectbox("Origen", ["Compra", "Regalo", "Intercambio"])
             enviado = st.form_submit_button("Agregar", type="primary")
         if enviado:
             if not titulo.strip() or not autor.strip():

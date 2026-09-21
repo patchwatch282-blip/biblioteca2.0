@@ -12,7 +12,7 @@ from datetime import date, timedelta
 # ============================================================
 
 ARCHIVO_DATOS = "biblioteca.db"
-DIAS_PRESTAMO = 1
+DIAS_PRESTAMO = -1
 MAX_LIBROS = 5
 
 

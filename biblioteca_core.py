@@ -1006,6 +1006,7 @@ class Biblioteca:
                 )
 
         activos = self.activos_usuario(codigo_usuario)
+       
         if len(activos) >= MAX_LIBROS:
             return False, "El usuario ya tiene el maximo de prestamos."
 
